@@ -1,54 +1,6 @@
-# OSTrack
-The official implementation for the **ECCV 2022** paper [_Joint Feature Learning and Relation Modeling for Tracking: A One-Stream Framework_](https://arxiv.org/abs/2203.11991).
+# PANC
+# Towards Patch-based Noise Compression for Adversarial Attack against Transformer-based Visual Tracking
 
-[[Models](https://drive.google.com/drive/folders/1ttafo0O5S9DXK2PX0YqPvPrQ-HWJjhSy?usp=sharing)][[Raw Results](https://drive.google.com/drive/folders/1TYU5flzZA1ap2SLdzlGRQDbObwMxCiaR?usp=sharing)][[Training logs](https://drive.google.com/drive/folders/1LUsGf9JRV0k-R3TA7UFBRlcic22M4uBp?usp=sharing)]
-
-<!-- [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/joint-feature-learning-and-relation-modeling/visual-object-tracking-on-lasot)](https://paperswithcode.com/sota/visual-object-tracking-on-lasot?p=joint-feature-learning-and-relation-modeling)
-
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/joint-feature-learning-and-relation-modeling/visual-object-tracking-on-got-10k)](https://paperswithcode.com/sota/visual-object-tracking-on-got-10k?p=joint-feature-learning-and-relation-modeling)
-
-[//]: # ([![PWC]&#40;https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/joint-feature-learning-and-relation-modeling/visual-object-tracking-on-trackingnet&#41;]&#40;https://paperswithcode.com/sota/visual-object-tracking-on-trackingnet?p=joint-feature-learning-and-relation-modeling&#41;)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/joint-feature-learning-and-relation-modeling/visual-object-tracking-on-uav123)](https://paperswithcode.com/sota/visual-object-tracking-on-uav123?p=joint-feature-learning-and-relation-modeling)
- -->
-<p align="center">
-  <img width="85%" src="https://github.com/botaoye/OSTrack/blob/main/assets/arch.png" alt="Framework"/>
-</p>
-
-## News
-**[Dec. 12, 2022]**
-- OSTrack is now available in [Modelscope](https://modelscope.cn/models/damo/cv_vitb_video-single-object-tracking_ostrack/summary), where you can run demo videos online and conveniently integrate OSTrack into your code.
-
-**[Oct. 28, 2022]**
-- :trophy: We are the winners of VOT-2022 STb(box GT) & RTb challenges.
-
-
-## Highlights
-
-### :star2: New One-stream Tracking Framework
-OSTrack is a simple, neat, high-performance **one-stream tracking framework** for joint feature learning and relational modeling based on self-attention operators.
-Without any additional temporal information, OSTrack achieves SOTA performance on multiple benchmarks. OSTrack can serve as a strong baseline for further research.
-
-| Tracker     | GOT-10K (AO) | LaSOT (AUC) | TrackingNet (AUC) | UAV123(AUC) |
-|:-----------:|:------------:|:-----------:|:-----------------:|:-----------:|
-| OSTrack-384 | 73.7         | 71.1        | 83.9              | 70.7        |
-| OSTrack-256 | 71.0         | 69.1        | 83.1              | 68.3        |
-
-
-### :star2: Fast Training
-OSTrack-256 can be trained in ~24 hours with 4*V100 (16GB of memory per GPU), which is much faster than recent SOTA transformer-based trackers. The fast training speed comes from:
-
-1. While previous Siamese-style trackers required separate feeding of the template and search region into the backbone at each iteration of training, OSTrack directly combines the template and search region. The tight and highly parallelized structure results in improved training and inference speed.
-  
-2. The proposed early candidate elimination (ECE) module significantly reduces memory and time consumption.
-  
-3. Pretrained Transformer weights enable faster convergence.
-
-### :star2: Good performance-speed trade-off
-
-[//]: # (![speed_vs_performance]&#40;https://github.com/botaoye/OSTrack/blob/main/assets/speed_vs_performance.png&#41;)
-<p align="center">
-  <img width="70%" src="https://github.com/botaoye/OSTrack/blob/main/assets/speed_vs_performance.png" alt="speed_vs_performance"/>
-</p>
 
 ## Install the environment
 **Option1**: Use the Anaconda (CUDA 10.2)
@@ -104,24 +56,16 @@ Put the tracking datasets in ./data. It should look like this:
             |-- TEST
    ```
 
-
-## Training
-Download pre-trained [MAE ViT-Base weights](https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_base.pth) and put it under `$PROJECT_ROOT$/pretrained_models` (different pretrained models can also be used, see [MAE](https://github.com/facebookresearch/mae) for more details).
-
-```
-python tracking/train.py --script ostrack --config vitb_256_mae_ce_32x4_ep300 --save_dir ./output --mode multiple --nproc_per_node 4 --use_wandb 1
-```
-
-Replace `--config` with the desired model config under `experiments/ostrack`. We use [wandb](https://github.com/wandb/client) to record detailed training logs, in case you don't want to use wandb, set `--use_wandb 0`.
-
-
-## Evaluation
-Download the model weights from [Google Drive](https://drive.google.com/drive/folders/1PS4inLS8bWNCecpYZ0W2fE5-A04DvTcd?usp=sharing) 
+## Test PANC
+Download the model weights from: [[Models](https://drive.google.com/drive/folders/1ttafo0O5S9DXK2PX0YqPvPrQ-HWJjhSy?usp=sharing)] 
 
 Put the downloaded weights on `$PROJECT_ROOT$/output/checkpoints/train/ostrack`
 
-Change the corresponding values of `lib/test/evaluation/local.py` to the actual benchmark saving paths
-
+Change the corresponding values of `lib/test/evaluation/local.py` to the actual benchmark saving paths\
+You can test the effects of different parameters by setting them in ```tracker.py```：  
+```
+add_noise_patch_size, denoise_initial_patch_size, denoise_iterations
+```
 Some testing examples:
 - LaSOT or other off-line evaluated benchmarks (modify `--dataset` correspondingly)
 ```
@@ -139,45 +83,3 @@ python tracking/test.py ostrack vitb_384_mae_ce_32x4_ep300 --dataset trackingnet
 python lib/test/utils/transform_trackingnet.py --tracker_name ostrack --cfg_name vitb_384_mae_ce_32x4_ep300
 ```
 
-## Visualization or Debug 
-[Visdom](https://github.com/fossasia/visdom) is used for visualization. 
-1. Alive visdom in the server by running `visdom`:
-
-2. Simply set `--debug 1` during inference for visualization, e.g.:
-```
-python tracking/test.py ostrack vitb_384_mae_ce_32x4_ep300 --dataset vot22 --threads 1 --num_gpus 1 --debug 1
-```
-3. Open `http://localhost:8097` in your browser (remember to change the IP address and port according to the actual situation).
-
-4. Then you can visualize the candidate elimination process.
-
-![ECE_vis](https://github.com/botaoye/OSTrack/blob/main/assets/vis.png)
-
-
-## Test FLOPs, and Speed
-*Note:* The speeds reported in our paper were tested on a single RTX2080Ti GPU.
-
-```
-# Profiling vitb_256_mae_ce_32x4_ep300
-python tracking/profile_model.py --script ostrack --config vitb_256_mae_ce_32x4_ep300
-# Profiling vitb_384_mae_ce_32x4_ep300
-python tracking/profile_model.py --script ostrack --config vitb_384_mae_ce_32x4_ep300
-```
-
-
-## Acknowledgments
-* Thanks for the [STARK](https://github.com/researchmm/Stark) and [PyTracking](https://github.com/visionml/pytracking) library, which helps us to quickly implement our ideas.
-* We use the implementation of the ViT from the [Timm](https://github.com/rwightman/pytorch-image-models) repo.  
-
-
-## Citation
-If our work is useful for your research, please consider citing:
-
-```Bibtex
-@inproceedings{ye2022ostrack,
-  title={Joint Feature Learning and Relation Modeling for Tracking: A One-Stream Framework},
-  author={Ye, Botao and Chang, Hong and Ma, Bingpeng and Shan, Shiguang and Chen, Xilin},
-  booktitle={ECCV},
-  year={2022}
-}
-```
