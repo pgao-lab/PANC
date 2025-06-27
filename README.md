@@ -82,4 +82,7 @@ python lib/test/utils/transform_got10k.py --tracker_name ostrack --cfg_name vitb
 python tracking/test.py ostrack vitb_384_mae_ce_32x4_ep300 --dataset trackingnet --threads 16 --num_gpus 4
 python lib/test/utils/transform_trackingnet.py --tracker_name ostrack --cfg_name vitb_384_mae_ce_32x4_ep300
 ```
+## References
+* [OSTrack](https://github.com/botaoye/OSTrack)
+* [IoUAttack](https://github.com/VISION-SJTU/IoUattack)
 
