@@ -86,3 +86,15 @@ python lib/test/utils/transform_trackingnet.py --tracker_name ostrack --cfg_name
 * [OSTrack](https://github.com/botaoye/OSTrack)
 * [IoUAttack](https://github.com/VISION-SJTU/IoUattack)
 
+
+## Citation
+
+```bibtex
+@ARTICLE{panc,
+  author={Gao, Peng and Xu, Long and Tang, Wen-Jia and Wang, Fei and Fujita, Hamido and Aljuaid, Hanan and Yuan, Ru-Yue},
+  journal={IEEE Transactions on Information Forensics and Security}, 
+  title={Towards Patch-based Noise Compression for Adversarial Attack against Transformer-based Visual Tracking}, 
+  year={2025},
+  doi={10.1109/TIFS.2025.3648551}
+}
+```
